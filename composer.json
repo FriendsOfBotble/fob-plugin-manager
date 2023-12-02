@@ -1,0 +1,6 @@
+{
+    "name": "datlechin/botble-plugin-manager",
+    "require": {
+        "composer/composer": "^2.6"
+    }
+}
