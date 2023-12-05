@@ -3,29 +3,26 @@
 namespace Datlechin\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Datlechin\PluginManager\ComposerAdapter;
+use Botble\Base\Http\Responses\BaseHttpResponse;
+use Datlechin\PluginManager\Actions\RequirePlugin;
+use Datlechin\PluginManager\Exceptions\ComposerRequireFailedException;
 use Datlechin\PluginManager\Http\Requests\RequirePluginRequest;
-use Symfony\Component\Console\Input\StringInput;
 
 class RequirePluginController extends BaseController
 {
-    public function __invoke(RequirePluginRequest $request, ComposerAdapter $composer)
+    public function __invoke(RequirePluginRequest $request, RequirePlugin $requirePlugin): BaseHttpResponse
     {
-        $name = $request->input('name');
+        try {
+            $requirePlugin($request->input('name'));
 
-        if (! str_contains($name, ':')) {
-            $name .= ':*';
-        }
-
-        $result = $composer->run(new StringInput("require $name"));
-
-        if ($result->getExitCode() !== 0) {
+            return $this
+                ->httpResponse()
+                ->setMessage(__('Plugin has been installed successfully.'));
+        } catch (ComposerRequireFailedException) {
             return $this
                 ->httpResponse()
                 ->setError()
-                ->setMessage($result->getOutput());
+                ->setMessage(__('Failed to execute, please check the composer logs in the storage/logs folder.'));
         }
-
-        return $this->httpResponse();
     }
 }

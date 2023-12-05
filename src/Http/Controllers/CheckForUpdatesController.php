@@ -3,28 +3,25 @@
 namespace Datlechin\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Datlechin\PluginManager\ComposerAdapter;
-use Symfony\Component\Console\Input\ArrayInput;
+use Botble\Base\Http\Responses\BaseHttpResponse;
+use Datlechin\PluginManager\Actions\CheckForUpdates;
+use Datlechin\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
 
 class CheckForUpdatesController extends BaseController
 {
-    public function __invoke(ComposerAdapter $composer)
+    public function __invoke(CheckForUpdates $checkForUpdates): BaseHttpResponse
     {
-        $result = $composer->run(new ArrayInput([
-            'command' => 'outdated',
-            '--direct' => true,
-            '--format' => 'json',
-        ]));
+        try {
+            $result = $checkForUpdates();
 
-        if ($result->getExitCode() !== 0) {
+            return $this
+                ->httpResponse()
+                ->setData($result);
+        } catch (ComposerCheckForUpdatesFailedException) {
             return $this
                 ->httpResponse()
                 ->setError()
-                ->setMessage($result->getOutput());
+                ->setMessage(__('Failed to execute, please check the composer logs in the storage/logs folder.'));
         }
-
-        return $this
-            ->httpResponse()
-            ->setData($result->getOutput());
     }
 }
