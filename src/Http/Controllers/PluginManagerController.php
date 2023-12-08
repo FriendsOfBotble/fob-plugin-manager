@@ -4,6 +4,7 @@ namespace Datlechin\PluginManager\Http\Controllers;
 
 use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 
 class PluginManagerController extends BaseController
@@ -14,6 +15,8 @@ class PluginManagerController extends BaseController
 
         Assets::usingVueJS()->addScriptsDirectly('vendor/core/plugins/plugin-manager/js/plugin-manager.js');
 
-        return view('plugins/plugin-manager::index');
+        $lastCheckUpdate = Carbon::parse(setting('plugin_manager.last_update_check'))->diffForHumans();
+
+        return view('plugins/plugin-manager::index', compact('lastCheckUpdate'));
     }
 }

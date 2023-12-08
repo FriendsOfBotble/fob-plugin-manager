@@ -1,7 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 import PluginItem from './PluginItem.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
+
+defineProps({
+    lastUpdateCheck: String,
+})
 
 const checkForUpdatesLoading = ref(false)
 const pluginUpdates = ref([])
@@ -50,7 +54,7 @@ const updatePlugin = (plugin) => {
             </div>
         </div>
         <div class="card-body">
-            <p><strong>Last update check:</strong> <span class="text-muted">2 days ago</span></p>
+            <p><strong>Last update check:</strong> <span class="text-muted">{{ lastUpdateCheck }}</span></p>
 
             <div class="btn-list">
                 <button type="button" class="btn" @click="checkForUpdates" :disabled="checkForUpdatesLoading">
