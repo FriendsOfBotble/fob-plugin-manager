@@ -5,10 +5,8 @@ namespace Datlechin\PluginManager\Http\Controllers;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Datlechin\PluginManager\Actions\UpdatePlugin;
-use Datlechin\PluginManager\ComposerAdapter;
 use Datlechin\PluginManager\Exceptions\ComposerUpdateFailedException;
 use Datlechin\PluginManager\Http\Requests\UpdatePluginRequest;
-use Symfony\Component\Console\Input\StringInput;
 
 class UpdatePluginController extends BaseController
 {

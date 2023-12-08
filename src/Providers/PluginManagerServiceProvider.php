@@ -22,6 +22,12 @@ class PluginManagerServiceProvider extends ServiceProvider
             $composer = new Composer();
             $composer->setAutoExit(false);
 
+            putenv(sprintf('COMPOSER_HOME=%s', storage_path('.composer')));
+            putenv(sprintf('COMPOSER=%s', base_path('composer.json')));
+
+            @ini_set('memory_limit', '1G');
+            @set_time_limit(0);
+
             return new ComposerAdapter(
                 $composer,
                 $app->make(OutputLogger::class),
@@ -29,9 +35,10 @@ class PluginManagerServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind(OutputLogger::class, function (Application $app) {
-            return new OutputLogger($app->make(LogManager::class));
-        });
+        $this->app->bind(
+            OutputLogger::class,
+            fn (Application $app) => new OutputLogger($app->make(LogManager::class))
+        );
     }
 
     public function boot(): void
@@ -39,6 +46,8 @@ class PluginManagerServiceProvider extends ServiceProvider
         $this
             ->setNamespace('plugins/plugin-manager')
             ->loadRoutes()
+            ->publishAssets()
+            ->loadMigrations()
             ->loadAndPublishViews();
 
         DashboardMenu::default()->beforeRetrieving(
