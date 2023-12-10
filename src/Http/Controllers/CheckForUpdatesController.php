@@ -16,7 +16,7 @@ class CheckForUpdatesController extends BaseController
 
             return $this
                 ->httpResponse()
-                ->setData($result);
+                ->setData($result->toArray());
         } catch (ComposerCheckForUpdatesFailedException) {
             return $this
                 ->httpResponse()

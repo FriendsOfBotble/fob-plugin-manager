@@ -6,6 +6,8 @@ use Botble\Setting\Facades\Setting;
 use Carbon\Carbon;
 use Datlechin\PluginManager\ComposerAdapter;
 use Datlechin\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
+use Datlechin\PluginManager\Responses\CheckUpdatesResponse;
+use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\ArrayInput;
 
 class CheckForUpdates
@@ -14,7 +16,7 @@ class CheckForUpdates
     {
     }
 
-    public function __invoke(): string
+    public function __invoke(): CheckUpdatesResponse
     {
         $result = $this->composer->run(new ArrayInput([
             'command' => 'outdated',
@@ -29,6 +31,9 @@ class CheckForUpdates
         Setting::set('plugin_manager.last_update_check', Carbon::now());
         Setting::save();
 
-        return $result->getOutput();
+        return new CheckUpdatesResponse(
+            lastCheck: Carbon::now(),
+            plugins: Arr::get(json_decode($result->getOutput(), true), 'installed', []),
+        );
     }
 }

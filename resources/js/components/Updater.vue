@@ -3,12 +3,13 @@ import { ref, defineProps } from 'vue'
 import PluginItem from './PluginItem.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 
-defineProps({
+const props = defineProps({
     lastUpdateCheck: String,
 })
 
 const checkForUpdatesLoading = ref(false)
 const pluginUpdates = ref([])
+const lastCheck = ref(props.lastUpdateCheck)
 
 const checkForUpdates = () => {
     checkForUpdatesLoading.value = true
@@ -17,10 +18,12 @@ const checkForUpdates = () => {
         .make()
         .post(route('plugin-manager.check-for-updates'))
         .then(({ data }) => {
-            pluginUpdates.value = []
-            const { installed } = JSON.parse(data.data)
+            const { last_check, plugins } = data.data
 
-            installed.forEach((plugin) => {
+            lastCheck.value = last_check
+            pluginUpdates.value = []
+
+            plugins.forEach((plugin) => {
                 if (['semver-safe-update', 'update-possible'].includes(plugin['latest-status'])) {
                     pluginUpdates.value.push(plugin)
                 }
@@ -54,7 +57,7 @@ const updatePlugin = (plugin) => {
             </div>
         </div>
         <div class="card-body">
-            <p><strong>Last update check:</strong> <span class="text-muted">{{ lastUpdateCheck }}</span></p>
+            <p><strong>Last update check:</strong> <span class="text-muted">{{ lastCheck }}</span></p>
 
             <div class="btn-list">
                 <button type="button" class="btn" @click="checkForUpdates" :disabled="checkForUpdatesLoading">
