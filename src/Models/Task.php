@@ -1,10 +1,10 @@
 <?php
 
-namespace Datlechin\PluginManager\Models;
+namespace FriendsOfBotble\PluginManager\Models;
 
 use Botble\Base\Models\BaseModel;
-use Datlechin\PluginManager\Enums\TaskOperation;
-use Datlechin\PluginManager\Enums\TaskStatus;
+use FriendsOfBotble\PluginManager\Enums\TaskOperation;
+use FriendsOfBotble\PluginManager\Enums\TaskStatus;
 
 class Task extends BaseModel
 {

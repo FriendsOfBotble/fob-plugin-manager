@@ -1,12 +1,12 @@
 <?php
 
-namespace Datlechin\PluginManager\Actions;
+namespace FriendsOfBotble\PluginManager\Actions;
 
 use Botble\Setting\Facades\Setting;
 use Carbon\Carbon;
-use Datlechin\PluginManager\ComposerAdapter;
-use Datlechin\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
-use Datlechin\PluginManager\Responses\CheckUpdatesResponse;
+use FriendsOfBotble\PluginManager\ComposerAdapter;
+use FriendsOfBotble\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
+use FriendsOfBotble\PluginManager\Responses\CheckUpdatesResponse;
 use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\ArrayInput;
 

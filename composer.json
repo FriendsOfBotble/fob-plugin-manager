@@ -1,5 +1,5 @@
 {
-    "name": "datlechin/botble-plugin-manager",
+    "name": "friendsofbotble/plugin-manager",
     "require": {
         "composer/composer": "^2.6"
     }

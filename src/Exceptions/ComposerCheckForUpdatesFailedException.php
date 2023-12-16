@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Exceptions;
+namespace FriendsOfBotble\PluginManager\Exceptions;
 
 use Exception;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Datlechin\PluginManager\Providers;
+namespace FriendsOfBotble\PluginManager\Providers;
 
 use Botble\Base\Facades\DashboardMenu;
 use Botble\Base\Supports\ServiceProvider;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
 use Composer\Console\Application as Composer;
-use Datlechin\PluginManager\ComposerAdapter;
-use Datlechin\PluginManager\OutputLogger;
+use FriendsOfBotble\PluginManager\ComposerAdapter;
+use FriendsOfBotble\PluginManager\OutputLogger;
 use Illuminate\Foundation\Application;
 use Illuminate\Log\LogManager;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -18,6 +18,10 @@ class PluginManagerServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        if (! class_exists(Composer::class)) {
+            require_once __DIR__ . '../../../vendor/autoload.php';
+        }
+
         $this->app->singleton(ComposerAdapter::class, function (Application $app) {
             $composer = new Composer();
             $composer->setAutoExit(false);

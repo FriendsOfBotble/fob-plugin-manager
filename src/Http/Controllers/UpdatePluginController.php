@@ -1,12 +1,12 @@
 <?php
 
-namespace Datlechin\PluginManager\Http\Controllers;
+namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
-use Datlechin\PluginManager\Actions\UpdatePlugin;
-use Datlechin\PluginManager\Exceptions\ComposerUpdateFailedException;
-use Datlechin\PluginManager\Http\Requests\UpdatePluginRequest;
+use FriendsOfBotble\PluginManager\Actions\UpdatePlugin;
+use FriendsOfBotble\PluginManager\Exceptions\ComposerUpdateFailedException;
+use FriendsOfBotble\PluginManager\Http\Requests\UpdatePluginRequest;
 
 class UpdatePluginController extends BaseController
 {

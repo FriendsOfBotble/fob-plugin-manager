@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Http\Requests;
+namespace FriendsOfBotble\PluginManager\Http\Requests;
 
 use Botble\Support\Http\Requests\Request;
 

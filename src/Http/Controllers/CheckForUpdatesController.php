@@ -1,11 +1,11 @@
 <?php
 
-namespace Datlechin\PluginManager\Http\Controllers;
+namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
-use Datlechin\PluginManager\Actions\CheckForUpdates;
-use Datlechin\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
+use FriendsOfBotble\PluginManager\Actions\CheckForUpdates;
+use FriendsOfBotble\PluginManager\Exceptions\ComposerCheckForUpdatesFailedException;
 
 class CheckForUpdatesController extends BaseController
 {

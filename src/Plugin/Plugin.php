@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Plugin;
+namespace FriendsOfBotble\PluginManager\Plugin;
 
 class Plugin
 {

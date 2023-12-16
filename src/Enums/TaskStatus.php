@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Enums;
+namespace FriendsOfBotble\PluginManager\Enums;
 
 enum TaskStatus: string
 {

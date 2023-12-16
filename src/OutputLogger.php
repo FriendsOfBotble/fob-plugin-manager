@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager;
+namespace FriendsOfBotble\PluginManager;
 
 use Psr\Log\LoggerInterface;
 

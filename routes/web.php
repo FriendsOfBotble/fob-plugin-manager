@@ -1,10 +1,10 @@
 <?php
 
 use Botble\Base\Facades\AdminHelper;
-use Datlechin\PluginManager\Http\Controllers\CheckForUpdatesController;
-use Datlechin\PluginManager\Http\Controllers\PluginManagerController;
-use Datlechin\PluginManager\Http\Controllers\RequirePluginController;
-use Datlechin\PluginManager\Http\Controllers\UpdatePluginController;
+use FriendsOfBotble\PluginManager\Http\Controllers\CheckForUpdatesController;
+use FriendsOfBotble\PluginManager\Http\Controllers\PluginManagerController;
+use FriendsOfBotble\PluginManager\Http\Controllers\RequirePluginController;
+use FriendsOfBotble\PluginManager\Http\Controllers\UpdatePluginController;
 use Illuminate\Support\Facades\Route;
 
 AdminHelper::registerRoutes(function () {

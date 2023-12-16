@@ -1,9 +1,9 @@
 <?php
 
-namespace Datlechin\PluginManager\Actions;
+namespace FriendsOfBotble\PluginManager\Actions;
 
-use Datlechin\PluginManager\ComposerAdapter;
-use Datlechin\PluginManager\Exceptions\ComposerRequireFailedException;
+use FriendsOfBotble\PluginManager\ComposerAdapter;
+use FriendsOfBotble\PluginManager\Exceptions\ComposerRequireFailedException;
 use Symfony\Component\Console\Input\StringInput;
 
 class RequirePlugin

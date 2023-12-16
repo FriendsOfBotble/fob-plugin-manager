@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Http\Controllers;
+namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;

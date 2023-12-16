@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager\Responses;
+namespace FriendsOfBotble\PluginManager\Responses;
 
 use Carbon\Carbon;
 

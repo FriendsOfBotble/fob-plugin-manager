@@ -1,6 +1,6 @@
 <?php
 
-namespace Datlechin\PluginManager;
+namespace FriendsOfBotble\PluginManager;
 
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
