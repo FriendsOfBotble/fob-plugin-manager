@@ -43,7 +43,7 @@ class ArgvInput extends Input
     private array $tokens;
     private array $parsed;
 
-    public function __construct(array $argv = null, InputDefinition $definition = null)
+    public function __construct(?array $argv = null, ?InputDefinition $definition = null)
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
@@ -55,18 +55,12 @@ class ArgvInput extends Input
         parent::__construct($definition);
     }
 
-    /**
-     * @return void
-     */
-    protected function setTokens(array $tokens)
+    protected function setTokens(array $tokens): void
     {
         $this->tokens = $tokens;
     }
 
-    /**
-     * @return void
-     */
-    protected function parse()
+    protected function parse(): void
     {
         $parseOptions = true;
         $this->parsed = $this->tokens;
