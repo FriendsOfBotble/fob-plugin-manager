@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import LoadingSpinner from './LoadingSpinner.vue';
+import LoadingSpinner from './LoadingSpinner.vue'
 
 const pluginName = ref(null)
 const loading = ref(false)
@@ -12,7 +12,7 @@ const requirePlugin = () => {
         .make()
         .post(route('plugin-manager.require-plugin', { name: pluginName.value }))
         .then(() => window.location.reload())
-        .finally(() => loading.value = false)
+        .finally(() => (loading.value = false))
 }
 </script>
 
@@ -24,7 +24,13 @@ const requirePlugin = () => {
         <div class="card-body">
             <form @submit.prevent="requirePlugin">
                 <div class="mb-3">
-                    <input type="text" v-model="pluginName" class="form-control" placeholder="vendor/plugin-name" required />
+                    <input
+                        type="text"
+                        v-model="pluginName"
+                        class="form-control"
+                        placeholder="vendor/plugin-name"
+                        required
+                    />
                 </div>
                 <button type="submit" class="btn btn-primary" :disabled="loading">
                     <loading-spinner v-if="loading" />

@@ -57,7 +57,9 @@ const updatePlugin = (plugin) => {
             </div>
         </div>
         <div class="card-body">
-            <p><strong>Last update check:</strong> <span class="text-muted">{{ lastCheck }}</span></p>
+            <p>
+                <strong>Last update check:</strong> <span class="text-muted">{{ lastCheck }}</span>
+            </p>
 
             <div class="btn-list">
                 <button type="button" class="btn" @click="checkForUpdates" :disabled="checkForUpdatesLoading">

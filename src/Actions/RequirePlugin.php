@@ -12,16 +12,16 @@ class RequirePlugin
     {
     }
 
-    public function __invoke(string $name): void
+    public function __invoke(string $packageName): void
     {
-        if (! str_contains($name, ':')) {
-            $name .= ':*';
+        if (! str_contains($packageName, ':')) {
+            $packageName .= ':*';
         }
 
-        $result = $this->composer->run(new StringInput("require $name"));
+        $result = $this->composer->run(new StringInput("require $packageName"));
 
         if ($result->getExitCode() !== 0) {
-            throw new ComposerRequireFailedException($result->getOutput());
+            throw new ComposerRequireFailedException($packageName, $result->getOutput());
         }
     }
 }

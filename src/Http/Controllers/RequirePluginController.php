@@ -18,11 +18,11 @@ class RequirePluginController extends BaseController
             return $this
                 ->httpResponse()
                 ->setMessage(__('Plugin has been installed successfully.'));
-        } catch (ComposerRequireFailedException) {
+        } catch (ComposerRequireFailedException $e) {
             return $this
                 ->httpResponse()
                 ->setError()
-                ->setMessage(__('Failed to execute, please check the composer logs in the storage/logs folder.'));
+                ->setMessage($e->guessCause());
         }
     }
 }

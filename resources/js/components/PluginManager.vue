@@ -1,6 +1,6 @@
 <script setup>
 import Installer from './Installer.vue'
-import updater from './Updater.vue';
+import updater from './Updater.vue'
 
 defineProps({
     lastUpdateCheck: String,
