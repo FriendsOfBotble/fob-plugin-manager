@@ -293,7 +293,8 @@ class Application extends BaseApplication
         }
 
         if (!$this->disablePluginsByDefault && $isNonAllowedRoot && !$io->isInteractive()) {
-            $io->writeError('<error>Composer plugins have been disabled for safety in this non-interactive session. Set COMPOSER_ALLOW_SUPERUSER=1 if you want to allow plugins to run as root/super user.</error>');
+            $io->writeError('<error>Composer plugins have been disabled for safety in this non-interactive session.</error>');
+            $io->writeError('<error>Set COMPOSER_ALLOW_SUPERUSER=1 if you want to allow plugins to run as root/super user.</error>');
             $this->disablePluginsByDefault = true;
         }
 
@@ -382,6 +383,11 @@ class Application extends BaseApplication
             }
 
             $result = parent::doRun($input, $output);
+
+            if (true === $input->hasParameterOption(['--version', '-V'], true)) {
+                $io->writeError(sprintf('<info>PHP</info> version <comment>%s</comment> (%s)', \PHP_VERSION, \PHP_BINARY));
+                $io->writeError('Run the "diagnose" command to get more detailed diagnostics output.');
+            }
 
             // chdir back to $oldWorkingDir if set
             if (isset($oldWorkingDir) && '' !== $oldWorkingDir) {

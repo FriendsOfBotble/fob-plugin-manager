@@ -1,6 +1,7 @@
 {
     "name": "friendsofbotble/plugin-manager",
     "require": {
-        "composer/composer": "^2.6"
+        "php": "^8.1",
+        "composer/composer": "^2.7"
     }
 }
