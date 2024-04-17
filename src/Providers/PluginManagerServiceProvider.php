@@ -63,6 +63,14 @@ class PluginManagerServiceProvider extends ServiceProvider
                     'icon' => 'ti ti-package',
                     'url' => fn () => route('plugin-manager.index'),
                 ])
+                ->registerItem([
+                    'parent_id' => 'cms-plugins-plugin-manager',
+                    'id' => 'cms-plugins-plugin-manager-upload-plugin-from-zip',
+                    'priority' => 1,
+                    'name' => __('Upload Plugin From Zip'),
+                    'icon' => 'ti ti-file-upload',
+                    'url' => fn () => route('plugin-manager.upload-plugin.index'),
+                ])
         );
     }
 }
