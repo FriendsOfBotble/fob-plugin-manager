@@ -17,7 +17,9 @@ AdminHelper::registerRoutes(function () {
         Route::post('check-for-updates', CheckForUpdatesController::class)->name('check-for-updates');
         Route::post('require-plugin', RequirePluginController::class)->name('require-plugin');
         Route::post('update-plugin', UpdatePluginController::class)->name('update-plugin');
+    });
 
+    Route::prefix('plugins')->name('plugin-manager.')->group(function () {
         Route::get('upload-plugin', [UploadPluginFromZipController::class, 'index'])->name('upload-plugin.index');
         Route::post('upload-plugin', [UploadPluginFromZipController::class, 'store'])->name('upload-plugin.store');
         Route::post('activate-plugin', [ActivatePluginController::class, '__invoke'])->name('activate-plugin');

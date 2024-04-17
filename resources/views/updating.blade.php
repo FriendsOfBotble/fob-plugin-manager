@@ -42,10 +42,10 @@
                                 <x-core::table.header>
                                     <x-core::table.header.cell/>
                                     <x-core::table.header.cell>
-                                        {{ __('Current') }}
+                                        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.current') }}
                                     </x-core::table.header.cell>
                                     <x-core::table.header.cell>
-                                        {{ __('Uploaded') }}
+                                        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.uploaded') }}
                                     </x-core::table.header.cell>
                                 </x-core::table.header>
 

@@ -28,5 +28,7 @@ return [
         'update_plugin' => 'Update plugin',
         'cancel' => 'Cancel',
         'back' => 'Back',
+        'current' => 'Current',
+        'uploaded' => 'Uploaded',
     ],
 ];
