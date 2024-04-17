@@ -7,7 +7,7 @@ use Botble\Base\Http\Responses\BaseHttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
-class UnReplaceCurrentPluginController extends BaseController
+class RemoveFilePluginController extends BaseController
 {
     public function __invoke(Request $request): BaseHttpResponse
     {

@@ -4,19 +4,19 @@ namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\PluginManagement\Services\PluginService;
-use FriendsOfBotble\PluginManager\Http\Requests\ReplacePluginRequest;
+use FriendsOfBotble\PluginManager\Http\Requests\UpdatePluginRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 use ZipArchive;
 
-class ReplaceCurrentPluginFromFileUploadedController extends BaseController
+class UpdatePluginFromFileUploadedController extends BaseController
 {
     public function __construct(protected PluginService $pluginService)
     {
     }
 
-    public function __invoke(ReplacePluginRequest $request)
+    public function __invoke(UpdatePluginRequest $request)
     {
         $filePath = $request->input('file_path');
         $pluginName = $request->input('name');
@@ -49,13 +49,9 @@ class ReplaceCurrentPluginFromFileUploadedController extends BaseController
 
         File::delete($filePath);
 
-        $this->pluginService->deactivate($pluginName);
-
-        return view('plugins/plugin-manager::upload-plugin.install', [
-            'pluginContent' => $this->pluginService->getPluginInfo($pluginName),
-            'pluginName' => $pluginName,
-            'fileName' => $request->input('file_name'),
-            'fails' => [],
-        ]);
+        return $this
+            ->httpResponse()
+            ->setNextRoute('plugins.index')
+            ->withUpdatedSuccessMessage();
     }
 }

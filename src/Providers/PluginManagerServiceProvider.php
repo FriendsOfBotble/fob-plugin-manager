@@ -52,7 +52,8 @@ class PluginManagerServiceProvider extends ServiceProvider
             ->loadRoutes()
             ->publishAssets()
             ->loadMigrations()
-            ->loadAndPublishViews();
+            ->loadAndPublishViews()
+            ->loadAndPublishTranslations();
 
         DashboardMenu::default()->beforeRetrieving(
             fn () => DashboardMenu::make()
@@ -64,11 +65,10 @@ class PluginManagerServiceProvider extends ServiceProvider
                     'url' => fn () => route('plugin-manager.index'),
                 ])
                 ->registerItem([
-                    'parent_id' => 'cms-plugins-plugin-manager',
+                    'parent_id' => 'cms-core-plugins',
                     'id' => 'cms-plugins-plugin-manager-upload-plugin-from-zip',
-                    'priority' => 1,
-                    'name' => __('Upload Plugin From Zip'),
-                    'icon' => 'ti ti-file-upload',
+                    'priority' => 3,
+                    'name' => __('Add New Plugin From Zip'),
                     'url' => fn () => route('plugin-manager.upload-plugin.index'),
                 ])
         );

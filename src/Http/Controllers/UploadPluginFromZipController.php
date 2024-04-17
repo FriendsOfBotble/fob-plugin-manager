@@ -22,13 +22,15 @@ class UploadPluginFromZipController extends BaseController
 
     public function index(): View
     {
-        $this->pageTitle(__('Upload plugin from zip'));
+        $this->pageTitle(trans('plugins/plugin-manager::plugin-manager.plugin_upload.title'));
 
-        return view('plugins/plugin-manager::upload-plugin.index');
+        return view('plugins/plugin-manager::uploader');
     }
 
     public function store(UploadFilePluginRequest $request): View
     {
+        $this->pageTitle(trans('plugins/plugin-manager::plugin-manager.plugin_upload.upload_plugin'));
+
         $zipFile = $request->file('file');
         $zipFile->move(storage_path('app/tmp'), $zipFileName = $zipFile->hashName() . '.zip');
         $filePath = storage_path('app/tmp/' . $zipFileName);
@@ -107,7 +109,7 @@ class UploadPluginFromZipController extends BaseController
 
             session()->regenerate();
 
-            return view('plugins/plugin-manager::upload-plugin.install',
+            return view('plugins/plugin-manager::installing',
                 compact('fails', 'fileName')
             );
         }
@@ -119,9 +121,13 @@ class UploadPluginFromZipController extends BaseController
         if (in_array($pluginName, array_values($plugins))) {
             $oldPluginContent = $this->pluginService->getPluginInfo($pluginName);
 
+            if ($oldPluginContent['id'] !== $pluginContent['id']) {
+                File::delete($filePath);
+            }
+
             session()->regenerate();
 
-            return view('plugins/plugin-manager::upload-plugin.already',
+            return view('plugins/plugin-manager::updating',
                 compact('pluginContent', 'oldPluginContent', 'fails', 'pluginName', 'fileName', 'filePath')
             );
         }
@@ -134,6 +140,6 @@ class UploadPluginFromZipController extends BaseController
 
         session()->regenerate();
 
-        return view('plugins/plugin-manager::upload-plugin.install', compact('pluginContent', 'fails', 'fileName', 'pluginName'));
+        return view('plugins/plugin-manager::installing', compact('pluginContent', 'fails', 'fileName', 'pluginName'));
     }
 }

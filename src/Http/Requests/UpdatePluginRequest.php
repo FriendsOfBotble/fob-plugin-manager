@@ -10,6 +10,8 @@ class UpdatePluginRequest extends Request
     {
         return [
             'name' => ['required', 'string'],
+            'file_path' => ['required', 'string'],
+            'file_name' => ['required', 'string'],
         ];
     }
 }

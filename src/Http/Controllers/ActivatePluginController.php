@@ -29,7 +29,7 @@ class ActivatePluginController extends BaseController
 
         return $this
             ->httpResponse()
-            ->setNextRoute('plugin-manager.upload-plugin.index')
-            ->setMessage(__('Activate plugin successfully!'));
+            ->setNextRoute('plugins.index')
+            ->setMessage(trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_activated_successfully'));
     }
 }
