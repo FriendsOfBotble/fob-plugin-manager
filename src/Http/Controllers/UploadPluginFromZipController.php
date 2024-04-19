@@ -109,7 +109,8 @@ class UploadPluginFromZipController extends BaseController
 
             session()->regenerate();
 
-            return view('plugins/plugin-manager::installing',
+            return view(
+                'plugins/plugin-manager::installing',
                 compact('fails', 'fileName')
             );
         }
@@ -118,16 +119,18 @@ class UploadPluginFromZipController extends BaseController
 
         $plugins = BaseHelper::scanFolder(plugin_path());
 
-        if (in_array($pluginName, array_values($plugins))) {
-            $oldPluginContent = $this->pluginService->getPluginInfo($pluginName);
-
+        if (
+            in_array($pluginName, array_values($plugins))
+            && ($oldPluginContent = $this->pluginService->getPluginInfo($pluginName))
+        ) {
             if ($oldPluginContent['id'] !== $pluginContent['id']) {
                 File::delete($filePath);
             }
 
             session()->regenerate();
 
-            return view('plugins/plugin-manager::updating',
+            return view(
+                'plugins/plugin-manager::updating',
                 compact('pluginContent', 'oldPluginContent', 'fails', 'pluginName', 'fileName', 'filePath')
             );
         }

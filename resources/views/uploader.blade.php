@@ -1,7 +1,10 @@
 @extends(BaseHelper::getAdminMasterLayoutTemplate())
 
 @section('content')
-    <x-core::alert :title="trans('plugins/plugin-manager::plugin-manager.plugin_upload.description')"/>
+    <x-core::alert>
+        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.description') }}
+    </x-core::alert>
+
     <x-core::card>
         <x-core::card.header>
             <div class="card-title">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.title') }}</div>

@@ -7,14 +7,14 @@
 
             <div class="mb-3">
                 <pre style="line-height: 1">
-                    <div>{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.unpacking_the_package') }}</div>
-                    <div>{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.install_the_plugin') }}</div>
+                    <p class="mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.unpacking_the_package') }}</p>
+                    <p class="mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.install_the_plugin') }}</p>
                     @if (count($fails) > 0)
                         @foreach ($fails as $messages)
-                            <div class="text-danger">{{ $messages }}</div>
+                            <p class="text-danger mb-0">{{ $messages }}</p>
                         @endforeach
                     @else
-                        <div class="text-success">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_installed_successfully') }}</div>
+                        <p class="text-success mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_installed_successfully') }}</p>
                     @endif
                 </pre>
                 @if (count($fails))

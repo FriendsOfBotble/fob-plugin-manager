@@ -11,16 +11,16 @@
             <x-core::alert :title="trans('plugins/plugin-manager::plugin-manager.plugin_upload.installing_plugin_from_file', ['file' => $fileName])"/>
             <div class="mb-3">
                 <pre style="line-height: 1">
-                    <div>{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.unpacking_the_package') }}</div>
-                    <div>{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.install_the_plugin') }}</div>
+                    <p class="mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.unpacking_the_package') }}</p>
+                    <p class="mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.install_the_plugin') }}</p>
 
                     @if (! $isSameAsPluginID)
-                        <div class="text-warning">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_id_conflict') }}</div>
+                    <p class="text-warning mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_id_conflict') }}</p>
                     @else
                         @if ($isAvailableUpdate)
-                            <div class="text-success">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_available_update') }}</div>
+                            <p class="text-success mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_available_update') }}</p>
                         @else
-                            <div class="text-warning">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_already_installed') }}</div>
+                            <p class="text-warning mb-0">{{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_already_installed') }}</p>
                         @endif
                     @endif
                 </pre>
