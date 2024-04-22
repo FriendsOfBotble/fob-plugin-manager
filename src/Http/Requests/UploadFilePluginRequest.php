@@ -9,7 +9,7 @@ class UploadFilePluginRequest extends Request
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'mimes:zip'],
+            'file' => ['required', 'file', 'mimes:zip', 'max:2048'],
         ];
     }
 }

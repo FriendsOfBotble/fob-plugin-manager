@@ -17,7 +17,7 @@ class UpdatePlugin
         $result = $this->composer->run(new StringInput("update $name"));
 
         if ($result->getExitCode() !== 0) {
-            throw new ComposerUpdateFailedException($result->getOutput());
+            throw new ComposerUpdateFailedException($name, $result->getOutput());
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Http\Controllers\BaseController;
+use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\PluginManagement\Services\PluginService;
 use FriendsOfBotble\PluginManager\Http\Requests\UpdatePluginRequest;
 use Illuminate\Support\Facades\File;
@@ -16,7 +17,7 @@ class UpdatePluginFromFileUploadedController extends BaseController
     {
     }
 
-    public function __invoke(UpdatePluginRequest $request)
+    public function __invoke(UpdatePluginRequest $request): BaseHttpResponse
     {
         $filePath = $request->input('file_path');
         $pluginName = $request->input('name');
@@ -34,9 +35,7 @@ class UpdatePluginFromFileUploadedController extends BaseController
             $zip->open($filePath);
         } catch (Throwable) {
             tap(
-                throw ValidationException::withMessages([
-                    'zip_file' => __('This is not a valid zip file.'),
-                ]),
+                throw ValidationException::withMessages(['zip_file' => __('This is not a valid zip file.')]),
                 fn () => File::delete($filePath)
             );
         }

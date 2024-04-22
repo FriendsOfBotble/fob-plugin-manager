@@ -4,9 +4,11 @@ namespace FriendsOfBotble\PluginManager\Http\Controllers;
 
 use Botble\Base\Facades\BaseHelper;
 use Botble\Base\Http\Controllers\BaseController;
+use Botble\Base\Supports\Breadcrumb;
 use Botble\PluginManagement\Services\PluginService;
 use FriendsOfBotble\PluginManager\Http\Requests\UploadFilePluginRequest;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -16,8 +18,10 @@ use ZipArchive;
 
 class UploadPluginFromZipController extends BaseController
 {
-    public function __construct(protected PluginService $pluginService)
+    protected function breadcrumb(): Breadcrumb
     {
+        return parent::breadcrumb()
+            ->add(trans('packages/plugin-management::plugin.plugins'), route('plugins.index'));
     }
 
     public function index(): View
@@ -27,7 +31,7 @@ class UploadPluginFromZipController extends BaseController
         return view('plugins/plugin-manager::uploader');
     }
 
-    public function store(UploadFilePluginRequest $request): View
+    public function store(UploadFilePluginRequest $request, PluginService $pluginService)
     {
         $this->pageTitle(trans('plugins/plugin-manager::plugin-manager.plugin_upload.upload_plugin'));
 
@@ -44,7 +48,7 @@ class UploadPluginFromZipController extends BaseController
         } catch (Throwable) {
             tap(
                 throw ValidationException::withMessages([
-                    'zip_file' => __('This is not a valid zip file.'),
+                    'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
                 ]),
                 fn () => File::delete($filePath)
             );
@@ -58,7 +62,7 @@ class UploadPluginFromZipController extends BaseController
 
         if (! $pluginContent) {
             throw ValidationException::withMessages([
-                'zip_file' => __('Could not find [plugin.json] file in your zip file.'),
+                'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
             ]);
         }
 
@@ -89,6 +93,12 @@ class UploadPluginFromZipController extends BaseController
 
         $pluginContent = json_decode($pluginContent, true);
 
+        if (! $pluginContent) {
+            throw ValidationException::withMessages([
+                'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.invalid_plugin_file'),
+            ]);
+        }
+
         $validator = Validator::make($pluginContent, [
             'id' => ['required', 'string', 'regex:/^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+$/'],
             'name' => ['required', 'string'],
@@ -101,18 +111,24 @@ class UploadPluginFromZipController extends BaseController
             'minimum_core_version' => ['nullable', 'string', 'regex:/^[0-9]+\.[0-9]+\.[0-9]+$/'],
         ]);
 
-        $fails = [];
-
         if ($validator->fails()) {
-            $fails = $validator->errors()->all();
             File::delete($filePath);
 
-            session()->regenerate();
+            throw ValidationException::withMessages($validator->errors()->all());
+        }
 
-            return view(
-                'plugins/plugin-manager::installing',
-                compact('fails', 'fileName')
-            );
+        $minimumCoreVersion = Arr::get($pluginContent, 'minimum_core_version');
+        $coreVersion = get_core_version();
+
+        if ($minimumCoreVersion && (version_compare($coreVersion, $minimumCoreVersion, '<'))) {
+            return $this
+                ->httpResponse()
+                ->setError()
+                ->setMessage(trans('packages/plugin-management::plugin.minimum_core_version_not_met', [
+                    'plugin' => $pluginContent['name'],
+                    'minimum_core_version' => $minimumCoreVersion,
+                    'current_core_version' => $coreVersion,
+                ]));
         }
 
         $pluginName = Str::afterLast($pluginContent['id'], '/');
@@ -121,18 +137,20 @@ class UploadPluginFromZipController extends BaseController
 
         if (
             in_array($pluginName, array_values($plugins))
-            && ($oldPluginContent = $this->pluginService->getPluginInfo($pluginName))
+            && ($oldPluginContent = $pluginService->getPluginInfo($pluginName))
         ) {
             if ($oldPluginContent['id'] !== $pluginContent['id']) {
                 File::delete($filePath);
             }
 
-            session()->regenerate();
-
-            return view(
-                'plugins/plugin-manager::updating',
-                compact('pluginContent', 'oldPluginContent', 'fails', 'pluginName', 'fileName', 'filePath')
-            );
+            return back()->with([
+                'isUpdate' => true,
+                'pluginContent' => $pluginContent,
+                'oldPluginContent' => $oldPluginContent,
+                'pluginName' => $pluginName,
+                'fileName' => $fileName,
+                'filePath' => $filePath,
+            ]);
         }
 
         $zip->extractTo(plugin_path($pluginName));
@@ -141,8 +159,11 @@ class UploadPluginFromZipController extends BaseController
 
         File::delete($filePath);
 
-        session()->regenerate();
-
-        return view('plugins/plugin-manager::installing', compact('pluginContent', 'fails', 'fileName', 'pluginName'));
+        return back()->with([
+            'isInstall' => true,
+            'pluginContent' => $pluginContent,
+            'pluginName' => $pluginName,
+            'fileName' => $fileName,
+        ]);
     }
 }

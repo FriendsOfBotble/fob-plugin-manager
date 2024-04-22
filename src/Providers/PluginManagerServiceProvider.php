@@ -5,45 +5,39 @@ namespace FriendsOfBotble\PluginManager\Providers;
 use Botble\Base\Facades\DashboardMenu;
 use Botble\Base\Supports\ServiceProvider;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
-use Composer\Console\Application as Composer;
-use FriendsOfBotble\PluginManager\ComposerAdapter;
-use FriendsOfBotble\PluginManager\OutputLogger;
-use Illuminate\Foundation\Application;
-use Illuminate\Log\LogManager;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 class PluginManagerServiceProvider extends ServiceProvider
 {
     use LoadAndPublishDataTrait;
 
-    public function register(): void
-    {
-        if (! class_exists(Composer::class)) {
-            require_once __DIR__ . '../../../vendor/autoload.php';
-        }
+    // public function register(): void
+    // {
+    //     if (! class_exists(Composer::class)) {
+    //         require_once __DIR__ . '../../../vendor/autoload.php';
+    //     }
 
-        $this->app->singleton(ComposerAdapter::class, function (Application $app) {
-            $composer = new Composer();
-            $composer->setAutoExit(false);
+    //     $this->app->singleton(ComposerAdapter::class, function (Application $app) {
+    //         $composer = new Composer();
+    //         $composer->setAutoExit(false);
 
-            putenv(sprintf('COMPOSER_HOME=%s', storage_path('.composer')));
-            putenv(sprintf('COMPOSER=%s', base_path('composer.json')));
+    //         putenv(sprintf('COMPOSER_HOME=%s', storage_path('.composer')));
+    //         putenv(sprintf('COMPOSER=%s', base_path('composer.json')));
 
-            @ini_set('memory_limit', '1G');
-            @set_time_limit(0);
+    //         @ini_set('memory_limit', '1G');
+    //         @set_time_limit(0);
 
-            return new ComposerAdapter(
-                $composer,
-                $app->make(OutputLogger::class),
-                new BufferedOutput()
-            );
-        });
+    //         return new ComposerAdapter(
+    //             $composer,
+    //             $app->make(OutputLogger::class),
+    //             new BufferedOutput()
+    //         );
+    //     });
 
-        $this->app->bind(
-            OutputLogger::class,
-            fn (Application $app) => new OutputLogger($app->make(LogManager::class))
-        );
-    }
+    //     $this->app->bind(
+    //         OutputLogger::class,
+    //         fn (Application $app) => new OutputLogger($app->make(LogManager::class))
+    //     );
+    // }
 
     public function boot(): void
     {
@@ -58,19 +52,18 @@ class PluginManagerServiceProvider extends ServiceProvider
         DashboardMenu::default()->beforeRetrieving(
             fn () => DashboardMenu::make()
                 ->registerItem([
-                    'id' => 'cms-plugins-plugin-manager',
-                    'priority' => 999,
-                    'name' => __('Plugin Manager'),
-                    'icon' => 'ti ti-package',
-                    'url' => fn () => route('plugin-manager.index'),
-                ])
-                ->registerItem([
                     'parent_id' => 'cms-core-plugins',
                     'id' => 'cms-plugins-plugin-manager-upload-plugin-from-zip',
                     'priority' => 3,
-                    'name' => __('Add New Plugin From Zip'),
+                    'name' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.menu'),
                     'url' => fn () => route('plugin-manager.upload-plugin.index'),
                 ])
         );
+
+        $this->app->booted(function () {
+            add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
+                return $html . view('plugins/plugin-manager::partials.upload-plugin-button')->render();
+            });
+        });
     }
 }
