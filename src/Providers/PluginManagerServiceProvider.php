@@ -10,8 +10,12 @@ class PluginManagerServiceProvider extends ServiceProvider
 {
     use LoadAndPublishDataTrait;
 
-    // public function register(): void
-    // {
+     public function register(): void
+     {
+         $this
+             ->setNamespace('plugins/fob-plugin-manager')
+             ->loadAndPublishConfigurations(['plugin-manager']);
+
     //     if (! class_exists(Composer::class)) {
     //         require_once __DIR__ . '../../../vendor/autoload.php';
     //     }
@@ -37,12 +41,15 @@ class PluginManagerServiceProvider extends ServiceProvider
     //         OutputLogger::class,
     //         fn (Application $app) => new OutputLogger($app->make(LogManager::class))
     //     );
-    // }
+     }
 
     public function boot(): void
     {
+        if (! config('plugins.fob-plugin-manager.plugin-manager.enabled', false)) {
+            return;
+        }
+
         $this
-            ->setNamespace('plugins/plugin-manager')
             ->loadRoutes()
             ->publishAssets()
             ->loadMigrations()
@@ -55,14 +62,14 @@ class PluginManagerServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-core-plugins',
                     'id' => 'cms-plugins-plugin-manager-upload-plugin-from-zip',
                     'priority' => 3,
-                    'name' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.menu'),
+                    'name' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.menu'),
                     'url' => fn () => route('plugin-manager.upload-plugin.index'),
                 ])
         );
 
         $this->app->booted(function () {
             add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
-                return $html . view('plugins/plugin-manager::partials.upload-plugin-button')->render();
+                return $html . view('plugins/fob-plugin-manager::partials.upload-plugin-button')->render();
             });
         });
     }

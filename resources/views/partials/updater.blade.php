@@ -8,16 +8,16 @@
 
 @if (! $isSameAsPluginID)
     <x-core::alert type="warning">
-        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_id_conflict') }}
+        {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_id_conflict') }}
     </x-core::alert>
 @else
     @if ($isAvailableUpdate)
         <x-core::alert type="success">
-            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_available_update') }}
+            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_available_update') }}
         </x-core::alert>
     @else
         <x-core::alert type="warning">
-            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_already_installed') }}
+            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_already_installed') }}
         </x-core::alert>
     @endif
 @endif
@@ -39,17 +39,17 @@
                 <x-core::table.header>
                     <x-core::table.header.cell/>
                     <x-core::table.header.cell>
-                        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.current') }}
+                        {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.current') }}
                     </x-core::table.header.cell>
                     <x-core::table.header.cell>
-                        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.uploaded') }}
+                        {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.uploaded') }}
                     </x-core::table.header.cell>
                 </x-core::table.header>
 
                 <x-core::table.body>
                     <x-core::table.body.row>
                         <x-core::table.body.cell>
-                            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_information.id') }}
+                            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_information.id') }}
                         </x-core::table.body.cell>
                         <x-core::table.body.cell>
                             {{ Arr::get($oldPluginContent, 'id') }}
@@ -61,7 +61,7 @@
 
                     <x-core::table.body.row>
                         <x-core::table.body.cell>
-                            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_information.name') }}
+                            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_information.name') }}
                         </x-core::table.body.cell>
                         <x-core::table.body.cell>
                             {{ Arr::get($oldPluginContent, 'name') }}
@@ -73,7 +73,7 @@
 
                     <x-core::table.body.row>
                         <x-core::table.body.cell>
-                            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_information.author') }}
+                            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_information.author') }}
                         </x-core::table.body.cell>
                         <x-core::table.body.cell>
                             {{ Arr::get($oldPluginContent, 'author') }}
@@ -85,7 +85,7 @@
 
                     <x-core::table.body.row>
                         <x-core::table.body.cell>
-                            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_information.version') }}
+                            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_information.version') }}
                         </x-core::table.body.cell>
                         <x-core::table.body.cell>
                             <x-core::badge class="bg-danger-lt text-danger">{{ Arr::get($oldPluginContent, 'version') }}</x-core::badge>
@@ -97,7 +97,7 @@
 
                     <x-core::table.body.row>
                         <x-core::table.body.cell>
-                            {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.plugin_information.minimum_core_version') }}
+                            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_information.minimum_core_version') }}
                         </x-core::table.body.cell>
                         <x-core::table.body.cell>
                             {{ Arr::get($oldPluginContent, 'minimum_core_version') }}
@@ -113,12 +113,12 @@
         <x-core::card.footer>
             <div class="btn-list">
                 <x-core::button tag="a" :href="route('plugin-manager.upload-plugin.index')">
-                    {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.back') }}
+                    {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.back') }}
                 </x-core::button>
 
                 @if($isAvailableUpdate)
                     <x-core::button type="submit" color="primary">
-                        {{ trans('plugins/plugin-manager::plugin-manager.plugin_upload.update_plugin') }}
+                        {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.update_plugin') }}
                     </x-core::button>
                 @endif
             </div>

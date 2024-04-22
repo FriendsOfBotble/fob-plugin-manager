@@ -26,14 +26,14 @@ class UploadPluginFromZipController extends BaseController
 
     public function index(): View
     {
-        $this->pageTitle(trans('plugins/plugin-manager::plugin-manager.plugin_upload.title'));
+        $this->pageTitle(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.title'));
 
-        return view('plugins/plugin-manager::uploader');
+        return view('plugins/fob-plugin-manager::uploader');
     }
 
     public function store(UploadFilePluginRequest $request, PluginService $pluginService)
     {
-        $this->pageTitle(trans('plugins/plugin-manager::plugin-manager.plugin_upload.upload_plugin'));
+        $this->pageTitle(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.upload_plugin'));
 
         $zipFile = $request->file('file');
         $zipFile->move(storage_path('app/tmp'), $zipFileName = $zipFile->hashName() . '.zip');
@@ -48,7 +48,7 @@ class UploadPluginFromZipController extends BaseController
         } catch (Throwable) {
             tap(
                 throw ValidationException::withMessages([
-                    'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
+                    'zip_file' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
                 ]),
                 fn () => File::delete($filePath)
             );
@@ -62,7 +62,7 @@ class UploadPluginFromZipController extends BaseController
 
         if (! $pluginContent) {
             throw ValidationException::withMessages([
-                'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
+                'zip_file' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.validation.could_not_find_plugin_file'),
             ]);
         }
 
@@ -95,7 +95,7 @@ class UploadPluginFromZipController extends BaseController
 
         if (! $pluginContent) {
             throw ValidationException::withMessages([
-                'zip_file' => trans('plugins/plugin-manager::plugin-manager.plugin_upload.validation.invalid_plugin_file'),
+                'zip_file' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.validation.invalid_plugin_file'),
             ]);
         }
 

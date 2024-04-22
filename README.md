@@ -2,6 +2,8 @@
 
 The Plugin Manager plugin for Botble CMS allows you to easily install new plugins by uploading zip files directly through the admin panel. With this convenient tool, expanding the functionality of your website becomes a breeze.
 
+Due to a security issue, you need to add `FOB_PLUGIN_MANAGER_ENABLED=true` to your `.env` file after activating this plugin in order to start using it.
+
 ![Screenshot](./art/screenshot-1.png)
 
 ## Requirements

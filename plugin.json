@@ -5,7 +5,7 @@
     "provider": "FriendsOfBotble\\PluginManager\\Providers\\PluginManagerServiceProvider",
     "author": "FriendsOfBotble",
     "url": "https://ngoquocdat.dev",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Plugin Manager for Botble CMS",
     "minimum_core_version": "7.2.0"
 }

@@ -13,10 +13,10 @@ class PluginManagerController extends BaseController
     {
         $this->pageTitle(__('Plugin Manager'));
 
-        Assets::usingVueJS()->addScriptsDirectly('vendor/core/plugins/plugin-manager/js/plugin-manager.js');
+        Assets::usingVueJS()->addScriptsDirectly('vendor/core/plugins/fob-plugin-manager/js/plugin-manager.js');
 
         $lastCheckUpdate = Carbon::parse(setting('plugin_manager.last_update_check'))->diffForHumans();
 
-        return view('plugins/plugin-manager::index', compact('lastCheckUpdate'));
+        return view('plugins/fob-plugin-manager::index', compact('lastCheckUpdate'));
     }
 }
