@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('plugin_manager_tasks')) {
+            return;
+        }
+
         Schema::create('plugin_manager_tasks', function (Blueprint $table) {
             $table->id();
             $table->string('operation');

@@ -4,6 +4,7 @@ return [
     'plugin_upload' => [
         'menu' => 'Upload From ZIP File',
         'title' => 'Upload Plugin from ZIP file',
+        'not_enabled' => 'Due to a security issue, you need to add <code>FOB_PLUGIN_MANAGER_ENABLED=true</code> to your <code>.env</code> file after activating this plugin in order to start using it.',
         'description' => "You can upload a plugin in the <code>.zip</code> file format, which you've downloaded from :link or other sources. Please exercise caution when uploading plugins, as they may contain malicious code that could harm your website.",
         'upload_and_install' => 'Upload & Install',
         'input_file_description' => 'Make sure the file is a valid file in <code>.zip</code> format.',

@@ -45,16 +45,18 @@ class PluginManagerServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (! config('plugins.fob-plugin-manager.plugin-manager.enabled', false)) {
-            return;
-        }
-
         $this
             ->loadRoutes()
-            ->publishAssets()
-            ->loadMigrations()
             ->loadAndPublishViews()
             ->loadAndPublishTranslations();
+
+        $enabled = config('plugins.fob-plugin-manager.plugin-manager.enabled', false);
+
+        if ($enabled) {
+            $this
+                ->publishAssets()
+                ->loadMigrations();
+        }
 
         DashboardMenu::default()->beforeRetrieving(
             fn () => DashboardMenu::make()
@@ -63,14 +65,17 @@ class PluginManagerServiceProvider extends ServiceProvider
                     'id' => 'cms-plugins-plugin-manager-upload-plugin-from-zip',
                     'priority' => 3,
                     'name' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.menu'),
+                    'icon' => 'ti ti-file-zip',
                     'url' => fn () => route('plugin-manager.upload-plugin.index'),
                 ])
         );
 
-        $this->app->booted(function () {
-            add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
-                return $html . view('plugins/fob-plugin-manager::partials.upload-plugin-button')->render();
+        if ($enabled) {
+            $this->app->booted(function () {
+                add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
+                    return $html . view('plugins/fob-plugin-manager::partials.upload-plugin-button')->render();
+                });
             });
-        });
+        }
     }
 }

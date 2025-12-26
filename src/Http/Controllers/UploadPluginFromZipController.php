@@ -28,7 +28,9 @@ class UploadPluginFromZipController extends BaseController
     {
         $this->pageTitle(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.title'));
 
-        return view('plugins/fob-plugin-manager::uploader');
+        return view('plugins/fob-plugin-manager::uploader', [
+            'enabled' => config('plugins.fob-plugin-manager.plugin-manager.enabled', false),
+        ]);
     }
 
     public function store(UploadFilePluginRequest $request, PluginService $pluginService)
