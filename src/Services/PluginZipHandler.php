@@ -22,7 +22,19 @@ class PluginZipHandler
 {
     protected const TMP_DIRECTORY = 'app/tmp';
 
-    protected const STORED_FILE_PATTERN = '/^[A-Za-z0-9]{40}\.zip$/D';
+    /**
+     * Everything this plugin writes to the shared tmp directory starts with this
+     * prefix, so pruning never touches files that belong to other code.
+     */
+    protected const TMP_PREFIX = 'fob-plugin-manager-';
+
+    protected const STORED_FILE_PATTERN = '/^fob-plugin-manager-upload-[A-Za-z0-9]{40}\.zip$/D';
+
+    /** Unconfirmed uploads and staging folders older than this are removed. */
+    protected const STALE_AFTER_SECONDS = 86400;
+
+    /** Backups are kept longer: they are the only copy if PHP died mid-swap. */
+    protected const STALE_BACKUP_AFTER_SECONDS = 604800;
 
     public function tmpPath(string $name = ''): string
     {
@@ -34,7 +46,9 @@ class PluginZipHandler
      */
     public function store(UploadedFile $file): string
     {
-        $storedName = Str::random(40) . '.zip';
+        $this->pruneStale();
+
+        $storedName = self::TMP_PREFIX . 'upload-' . Str::random(40) . '.zip';
 
         $file->move($this->tmpPath(), $storedName);
 
@@ -127,7 +141,7 @@ class PluginZipHandler
             'url' => ['nullable', 'url'],
             'version' => ['required', 'string'],
             'description' => ['nullable', 'string'],
-            'minimum_core_version' => ['nullable', 'string', 'regex:/^[0-9]+\.[0-9]+\.[0-9]+$/'],
+            'minimum_core_version' => ['nullable', 'string', 'regex:/^[0-9]+\.[0-9]+\.[0-9]+$/D'],
         ]);
 
         if ($validator->fails()) {
@@ -163,15 +177,20 @@ class PluginZipHandler
     public function replace(ZipArchive $zip, string $prefix, string $destination): void
     {
         $this->withStagedPlugin($zip, $prefix, function (string $source) use ($destination): void {
-            $backup = $this->tmpPath('fob-plugin-manager-backup-' . Str::random(16));
+            $backup = $this->tmpPath(self::TMP_PREFIX . 'backup-' . Str::random(16));
 
             $this->moveDirectory($destination, $backup);
 
             try {
                 $this->moveDirectory($source, $destination);
             } catch (Throwable $exception) {
-                File::deleteDirectory($destination);
-                $this->moveDirectory($backup, $destination);
+                // moveDirectory() never leaves a partial copy behind, so the destination is
+                // either empty or was created by someone else; restore only into a free slot.
+                try {
+                    $this->moveDirectory($backup, $destination);
+                } catch (Throwable) {
+                    // The backup stays in tmp (kept for STALE_BACKUP_AFTER_SECONDS) for manual recovery.
+                }
 
                 throw $exception;
             }
@@ -186,7 +205,7 @@ class PluginZipHandler
      */
     protected function withStagedPlugin(ZipArchive $zip, string $prefix, callable $callback): void
     {
-        $staging = $this->tmpPath('fob-plugin-manager-' . Str::random(16));
+        $staging = $this->tmpPath(self::TMP_PREFIX . 'stage-' . Str::random(16));
 
         try {
             if (! $zip->extractTo($staging)) {
@@ -218,7 +237,7 @@ class PluginZipHandler
         $folders = [];
 
         for ($index = 0; $index < $zip->numFiles; $index++) {
-            if (preg_match('#^([^/]+)/plugin\.json$#', (string) $zip->getNameIndex($index), $matches)
+            if (preg_match('#^([^/]+)/plugin\.json$#D', (string) $zip->getNameIndex($index), $matches)
                 && $matches[1] !== '__MACOSX') {
                 $folders[$matches[1]] = true;
             }
@@ -242,10 +261,34 @@ class PluginZipHandler
         }
 
         if (! File::copyDirectory($from, $to)) {
+            // $to did not exist before this call, so whatever is there is our partial copy.
+            File::deleteDirectory($to);
+
             throw $this->error(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.validation.extract_failed'));
         }
 
         File::deleteDirectory($from);
+    }
+
+    /**
+     * Remove leftovers: uploads whose update was never confirmed, and staging or
+     * backup folders left behind when PHP was killed mid-request.
+     */
+    public function pruneStale(): void
+    {
+        $now = time();
+
+        foreach (File::glob($this->tmpPath(self::TMP_PREFIX . '*')) ?: [] as $path) {
+            $maxAge = str_starts_with(basename($path), self::TMP_PREFIX . 'backup-')
+                ? self::STALE_BACKUP_AFTER_SECONDS
+                : self::STALE_AFTER_SECONDS;
+
+            if ($now - (int) @filemtime($path) < $maxAge) {
+                continue;
+            }
+
+            File::isDirectory($path) ? File::deleteDirectory($path) : File::delete($path);
+        }
     }
 
     protected function error(string $message): ValidationException

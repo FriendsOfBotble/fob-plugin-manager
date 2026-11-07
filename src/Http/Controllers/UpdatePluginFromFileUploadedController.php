@@ -27,7 +27,9 @@ class UpdatePluginFromFileUploadedController extends BaseController
         $pending = (array) session()->pull(UploadPluginFromZipController::PENDING_UPDATE_SESSION_KEY);
         $filePath = $zipHandler->resolveStoredFile(Arr::get($pending, 'file'));
 
-        if ($filePath && ! hash_equals((string) Arr::get($pending, 'token'), (string) $request->input('token'))) {
+        $expectedToken = (string) Arr::get($pending, 'token');
+
+        if ($filePath && ($expectedToken === '' || ! hash_equals($expectedToken, (string) $request->input('token')))) {
             File::delete($filePath);
             $filePath = null;
         }
