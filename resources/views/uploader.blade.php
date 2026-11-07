@@ -5,6 +5,10 @@
         <x-core::alert type="warning">
             {!! BaseHelper::clean(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.not_enabled')) !!}
         </x-core::alert>
+    @elseif(! $allowed)
+        <x-core::alert type="warning">
+            {{ trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.super_user_only') }}
+        </x-core::alert>
     @else
         <x-core::alert type="warning">
             {!! BaseHelper::clean(trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.description', ['link' => Html::link('https://marketplace.botble.com/products', 'Botble Marketplace', ['target' => '_blank'])])) !!}

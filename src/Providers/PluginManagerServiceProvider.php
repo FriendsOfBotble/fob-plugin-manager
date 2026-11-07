@@ -5,6 +5,7 @@ namespace FriendsOfBotble\PluginManager\Providers;
 use Botble\Base\Facades\DashboardMenu;
 use Botble\Base\Supports\ServiceProvider;
 use Botble\Base\Traits\LoadAndPublishDataTrait;
+use FriendsOfBotble\PluginManager\Http\Middleware\EnsurePluginUploadIsAllowed;
 
 class PluginManagerServiceProvider extends ServiceProvider
 {
@@ -73,6 +74,10 @@ class PluginManagerServiceProvider extends ServiceProvider
         if ($enabled) {
             $this->app->booted(function () {
                 add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
+                    if (! EnsurePluginUploadIsAllowed::allows(auth()->user())) {
+                        return $html;
+                    }
+
                     return $html . view('plugins/fob-plugin-manager::partials.upload-plugin-button')->render();
                 });
             });

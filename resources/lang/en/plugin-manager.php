@@ -26,9 +26,14 @@ return [
         'activate_plugin' => 'Activate plugin',
         'update_plugin' => 'Update plugin',
         'back' => 'Back',
+        'super_user_only' => 'Only super admins can upload or update plugins from ZIP files.',
         'validation' => [
             'could_not_find_plugin_file' => 'Could not find plugin file in your zip file.',
             'invalid_plugin_file' => 'The plugin.json file in your plugin zip file is not a valid.',
+            'invalid_zip_file' => 'This is not a valid zip file.',
+            'unsafe_zip_entry' => 'The zip file contains unsafe file paths and was rejected.',
+            'plugin_directory_exists' => 'A folder with this plugin name already exists but it is not a valid plugin.',
+            'extract_failed' => 'Could not extract the plugin files. Please check folder permissions and try again.',
         ],
     ],
 ];

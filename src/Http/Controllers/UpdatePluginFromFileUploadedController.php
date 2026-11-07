@@ -5,11 +5,11 @@ namespace FriendsOfBotble\PluginManager\Http\Controllers;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\PluginManagement\Services\PluginService;
-use FriendsOfBotble\PluginManager\Http\Requests\UpdatePluginRequest;
+use FriendsOfBotble\PluginManager\Services\PluginZipHandler;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
-use Throwable;
-use ZipArchive;
 
 class UpdatePluginFromFileUploadedController extends BaseController
 {
@@ -17,12 +17,22 @@ class UpdatePluginFromFileUploadedController extends BaseController
     {
     }
 
-    public function __invoke(UpdatePluginRequest $request): BaseHttpResponse
+    /**
+     * Apply the update confirmed on the upload page. The archive and target plugin
+     * come from the session written by UploadPluginFromZipController, never from
+     * request input, and are re-validated against the archive's own plugin.json.
+     */
+    public function __invoke(Request $request, PluginZipHandler $zipHandler): BaseHttpResponse
     {
-        $filePath = $request->input('file_path');
-        $pluginName = $request->input('name');
+        $pending = (array) session()->pull(UploadPluginFromZipController::PENDING_UPDATE_SESSION_KEY);
+        $filePath = $zipHandler->resolveStoredFile(Arr::get($pending, 'file'));
 
-        if (! File::exists($filePath)) {
+        if ($filePath && ! hash_equals((string) Arr::get($pending, 'token'), (string) $request->input('token'))) {
+            File::delete($filePath);
+            $filePath = null;
+        }
+
+        if (! $filePath) {
             return $this
                 ->httpResponse()
                 ->setError()
@@ -30,23 +40,30 @@ class UpdatePluginFromFileUploadedController extends BaseController
         }
 
         try {
-            $zip = new ZipArchive();
+            $zip = $zipHandler->open($filePath);
 
-            $zip->open($filePath);
-        } catch (Throwable) {
-            tap(
-                throw ValidationException::withMessages(['zip_file' => __('This is not a valid zip file.')]),
-                fn () => File::delete($filePath)
-            );
+            try {
+                [$prefix, $pluginContent, $pluginName] = $zipHandler->readPluginManifest($zip);
+
+                $oldPluginContent = $this->pluginService->getPluginInfo($pluginName);
+
+                if (
+                    $pluginContent['id'] !== Arr::get($pending, 'id')
+                    || $pluginName !== Arr::get($pending, 'name')
+                    || Arr::get($oldPluginContent, 'id') !== $pluginContent['id']
+                ) {
+                    throw ValidationException::withMessages([
+                        'file' => trans('plugins/fob-plugin-manager::plugin-manager.plugin_upload.plugin_id_conflict'),
+                    ]);
+                }
+
+                $zipHandler->replace($zip, $prefix, plugin_path($pluginName));
+            } finally {
+                $zip->close();
+            }
+        } finally {
+            File::delete($filePath);
         }
-
-        File::delete(plugin_path($pluginName));
-
-        $zip->extractTo(plugin_path($pluginName));
-
-        $zip->close();
-
-        File::delete($filePath);
 
         return $this
             ->httpResponse()

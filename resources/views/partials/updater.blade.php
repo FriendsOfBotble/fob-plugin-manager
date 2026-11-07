@@ -24,11 +24,8 @@
 
 <x-core::form method="post" :url="route('plugin-manager.update-plugin')">
     @if($isAvailableUpdate)
-        <input type="hidden" name="name" value="{{ session('pluginName') }}"/>
-        <input type="hidden" name="file_path" value="{{ session('filePath') }}"/>
-        <input type="hidden" name="file_name" value="{{ session('fileName') }}"/>
+        <input type="hidden" name="token" value="{{ session('updateToken') }}"/>
     @endif
-
     <x-core::card>
         <x-core::card.header>
             <div class="card-title">{{ session('fileName') }}</div>
