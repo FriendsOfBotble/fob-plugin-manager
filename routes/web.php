@@ -7,13 +7,6 @@ use FriendsOfBotble\PluginManager\Http\Middleware\EnsurePluginUploadIsAllowed;
 use Illuminate\Support\Facades\Route;
 
 AdminHelper::registerRoutes(function () {
-    // Route::prefix('plugin-manager')->name('plugin-manager.')->group(function () {
-    //     Route::get('/', PluginManagerController::class)->name('index');
-    //     Route::post('check-for-updates', CheckForUpdatesController::class)->name('check-for-updates');
-    //     Route::post('require-plugin', RequirePluginController::class)->name('require-plugin');
-    //     Route::post('update-plugin', UpdatePluginController::class)->name('update-plugin');
-    // });
-
     Route::prefix('plugins')->name('plugin-manager.')->group(function () {
         // The index stays reachable so it can explain how to enable the feature.
         Route::get('upload-plugin', [UploadPluginFromZipController::class, 'index'])->name('upload-plugin.index');

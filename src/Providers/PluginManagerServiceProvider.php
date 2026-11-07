@@ -11,38 +11,12 @@ class PluginManagerServiceProvider extends ServiceProvider
 {
     use LoadAndPublishDataTrait;
 
-     public function register(): void
-     {
-         $this
-             ->setNamespace('plugins/fob-plugin-manager')
-             ->loadAndPublishConfigurations(['plugin-manager']);
-
-    //     if (! class_exists(Composer::class)) {
-    //         require_once __DIR__ . '../../../vendor/autoload.php';
-    //     }
-
-    //     $this->app->singleton(ComposerAdapter::class, function (Application $app) {
-    //         $composer = new Composer();
-    //         $composer->setAutoExit(false);
-
-    //         putenv(sprintf('COMPOSER_HOME=%s', storage_path('.composer')));
-    //         putenv(sprintf('COMPOSER=%s', base_path('composer.json')));
-
-    //         @ini_set('memory_limit', '1G');
-    //         @set_time_limit(0);
-
-    //         return new ComposerAdapter(
-    //             $composer,
-    //             $app->make(OutputLogger::class),
-    //             new BufferedOutput()
-    //         );
-    //     });
-
-    //     $this->app->bind(
-    //         OutputLogger::class,
-    //         fn (Application $app) => new OutputLogger($app->make(LogManager::class))
-    //     );
-     }
+    public function register(): void
+    {
+        $this
+            ->setNamespace('plugins/fob-plugin-manager')
+            ->loadAndPublishConfigurations(['plugin-manager']);
+    }
 
     public function boot(): void
     {
@@ -50,14 +24,6 @@ class PluginManagerServiceProvider extends ServiceProvider
             ->loadRoutes()
             ->loadAndPublishViews()
             ->loadAndPublishTranslations();
-
-        $enabled = config('plugins.fob-plugin-manager.plugin-manager.enabled', false);
-
-        if ($enabled) {
-            $this
-                ->publishAssets()
-                ->loadMigrations();
-        }
 
         DashboardMenu::default()->beforeRetrieving(
             fn () => DashboardMenu::make()
@@ -71,7 +37,7 @@ class PluginManagerServiceProvider extends ServiceProvider
                 ])
         );
 
-        if ($enabled) {
+        if (EnsurePluginUploadIsAllowed::isEnabled()) {
             $this->app->booted(function () {
                 add_filter('plugin_management_installed_header_actions', function (?string $html): ?string {
                     if (! EnsurePluginUploadIsAllowed::allows(auth()->user())) {

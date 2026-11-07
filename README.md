@@ -28,7 +28,6 @@ Due to a security issue, you need to add `FOB_PLUGIN_MANAGER_ENABLED=true` to yo
 ## Goals
 
 -   [x] **Easy Plugin Installation**: Simply upload a plugin zip file through the admin panel to install new plugins effortlessly.
--   [ ] **Install Botble packages with Dependencies**: The Plugin Manager plugin can install Botble packages with dependencies automatically.
 
 ## Contributing
 
